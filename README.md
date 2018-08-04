@@ -36,3 +36,44 @@ The Dokuwiki package is downloaded directly from the web site as a compressed fi
         to retry, use: --limit @/vagrant/playbook.retry
 
 Following the entry for bug [#35645](https://github.com/ansible/ansible/issues/35645), someone mentioned that downloading to the "/tmp" and then extracting the file solved the problem. And that is how I also solved the problem.
+
+I wanted the Wiki to be in a directory independent of the version of Dokuwiki, and to do this, I created a symbolic link from the directory created by the extraction of the file named `wiki`
+
+    [vagrant@cancer ~]$ ls -l /var/www/html/wiki
+    lrwxrwxrwx. 1 apache apache 35 Aug  3 13:07 /var/www/html/wiki -> /var/www/html/dokuwiki-2018-04-22a
+    [vagrant@cancer ~]$
+
+In the Ansible this was done registering the extraction of the file, and then using when the symbolic link was created
+
+    - name: Extract Dokuwiki
+      unarchive:
+    (...)
+        list_files: yes
+      register: archive_contents
+    (...)
+    - name: Symbolic link from Dokuwiki to wiki
+      file:
+        src: "/var/www/html/{{ archive_contents.files[0] }}"
+    (...)
+
+The Apache configuration was done by creating a directory in `/etc/httpd/`, and copying the configuration file
+
+    - name: Wiki configuration directory
+      file:
+        path: /etc/httpd/vhosts.d/
+    (...)
+        state: directory
+
+    - name: Copy wiki configuration file.
+      copy:
+        src: files/wiki.conf
+        dest: /etc/httpd/vhosts.d/
+    (...)
+
+Finally we reboot the server
+
+    - name: Reboot the server
+        command: /sbin/shutdown -r +1
+        async: 0
+        poll: 0
+        ignore_errors: true
