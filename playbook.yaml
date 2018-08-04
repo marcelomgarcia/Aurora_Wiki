@@ -1,0 +1,136 @@
+# CentOS configuration for Doku Wiki
+# Assume to run as virtual machine, that is why I'm installing the kernel... 
+# devel packages.
+#
+# Marcelo Garcia (marcelo.garcia@emea.nec.com)
+# April 2018.
+
+# Adding packages
+- hosts: all
+  # Privilege escalation.
+  become: true
+  become_method: sudo
+  # Basic server configuration tasks.  
+  tasks:
+  # Make sure 'selinux' is disabled.
+  - name: Disable 'selinux'
+    selinux:
+      state: disabled
+      
+  - name: Install Basic Packages
+    action: yum name={{ item }} state=present update_cache=yes
+    with_items:
+      - '@development tools'
+      - kernel-devel
+      - vim
+      - redhat-lsb
+      - curl
+      - unzip
+
+  # Start of proper Wiki configuration.
+  - name: Install Apache web server
+    yum:
+      name: httpd
+      state: present
+
+  - name: Enable apache
+    service: 
+      name: httpd
+      enabled: yes
+
+  # Make sure EPEL is installed
+  - name: Install EPEL respository
+    yum_repository:
+      name: epel
+      description: EPEL YUM repo
+      baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+
+  # Install Remi repository to install the newer versions of PHP.
+  - name: Install Remi respository.
+    yum:
+      name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+      state: present
+
+  # Enable remi-php72 repository
+  - name: Install PHP 7.2
+    yum:
+      name: php
+      enablerepo: remi-php72
+      state: present
+
+  # php-gd is used for image resizing(?)
+  - name: Install PHP GD
+    yum: 
+      name: php72-php-gd
+      enablerepo: remi-php72
+      state: present
+
+  # Download the tgz file with newest Dokuwiki
+  - name: Download Dokuwiki stable from web site.
+    get_url:
+      url: https://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+      dest: /tmp/
+
+  # Install (extract) the Dokuwiki, and register the content. The first
+  # entry in the 'archive_contents', archive_contents[0], is the name of 
+  # the directory created by the 'tar' command.
+  - name: Extract Dokuwiki
+    unarchive:
+      src: /tmp/dokuwiki-stable.tgz
+      dest: /var/www/html
+      owner: apache
+      group: apache
+      remote_src: yes
+      list_files: yes
+    register: archive_contents
+
+  # Next step: create a symbolic link from the wiki directory to a 'generic'
+  # directory. Something link:
+  # archive_contents[0] -> /var/www/wiki
+  - name: Symbolic link from Dokuwiki to wiki
+    file:
+      src: "/var/www/html/{{ archive_contents.files[0] }}"
+      dest: /var/www/html/wiki
+      owner: apache
+      group: apache
+      state: link
+
+  # Add a "vhosts.conf" file to Apache configuration directory.
+  - name: Add "vhosts.conf" to Apache config directory.
+    copy:
+      src: files/vhosts.conf
+      dest: /etc/httpd/conf.d
+      mode: 0644
+
+  # Create Apache configuration file for Dokuwiki.
+  # First, create the directory for the configuration file.
+  - name: Wiki configuration directory
+    file:
+      path: /etc/httpd/vhosts.d/
+      owner: root
+      group: root
+      mode: 0755
+      state: directory
+
+  # Copy the configuration file from the local host to the destination on 
+  # the virtual machine.
+  - name: Copy wiki configuration file.
+    copy:
+      src: files/wiki.conf
+      dest: /etc/httpd/vhosts.d/
+      mode: 0644
+
+  # Main Configuration is done.
+  # Reboot the server.
+  - name: Reboot the server
+    command: /sbin/shutdown -r +1
+    async: 0
+    poll: 0
+    ignore_errors: true
+
+  #
+  # To configure the server, go to the URL "http://localhost:<port>/install.php."
+
+  #
+  # The End.
+  #
