@@ -77,3 +77,9 @@ Finally we reboot the server
         async: 0
         poll: 0
         ignore_errors: true
+
+To access the configuration page of the new wiki, go to the URL
+
+    http://localhost:<port>/install.php
+
+The *port* was defined in the `Vagrantfile`. Here we use the value 4080.
