@@ -83,3 +83,19 @@ To access the configuration page of the new wiki, go to the URL
     http://localhost:<port>/install.php
 
 The *port* was defined in the `Vagrantfile`. Here we use the value 4080.
+
+## How to use
+
+These are the basic Vagrant commands:
+
+* To start (or install if necessary) the virtual machine: `vagrant up`
+
+* To gracefully shutdown the machine: `vagrant halt`
+
+* Force the provisioning: `vagrant provision`
+
+* To access the virtual machine: `vagrant ssh`
+
+* To erase the virtual machine: `vagrant destroy`.
+
+**Note**, to use vagrant on Windows 7, I had to upgrade the Powershell, because the version "2" is too old. Now I'm running version "5".
