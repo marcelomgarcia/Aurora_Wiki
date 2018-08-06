@@ -98,4 +98,4 @@ These are the basic Vagrant commands:
 
 * To erase the virtual machine: `vagrant destroy`.
 
-**Note**, to use vagrant on Windows 7, I had to upgrade the Powershell, because the version "2" is too old. Now I'm running version "5".
+**Note**, to use vagrant on Windows 7, I had to upgrade the Powershell, from version "2" to version "5".
