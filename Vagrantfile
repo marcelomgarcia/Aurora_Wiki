@@ -6,7 +6,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 80, host: 4080
 
   config.vm.provider "virtualbox" do |vv|
-    vv.memory = 4096
+    vv.memory = 2048
     vv.cpus = 4
   end
   #config.vm.provision :shell, path: "bootstrap.sh"
