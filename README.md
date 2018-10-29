@@ -7,7 +7,7 @@ Installation and configuration of a Wiki. The project starts with a Vagrant file
 The project uses Vagrant to create and management of the virtual machine. The machine has 4GB and 4 processors
 
     config.vm.provider "virtualbox" do |vv|
-      vv.memory = 4096
+      vv.memory = 2048
       vv.cpus = 4
     end
 
