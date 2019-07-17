@@ -97,5 +97,3 @@ These are the basic Vagrant commands:
 * To access the virtual machine: `vagrant ssh`
 
 * To erase the virtual machine: `vagrant destroy`.
-
-**Note**, to use vagrant on Windows 7, I had to upgrade the Powershell, from version "2" to version "5".
