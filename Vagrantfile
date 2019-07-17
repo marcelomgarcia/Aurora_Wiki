@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vv|
     vv.memory = 2048
-    vv.cpus = 4
+    vv.cpus = 2
   end
   #config.vm.provision :shell, path: "bootstrap.sh"
   config.vm.hostname = "cancer"
