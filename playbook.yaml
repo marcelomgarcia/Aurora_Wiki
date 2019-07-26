@@ -18,14 +18,8 @@
       state: disabled
       
   - name: Install Basic Packages
-    action: yum name={{ item }} state=present update_cache=yes
-    with_items:
-      - '@development tools'
-      - kernel-devel
-      - vim
-      - redhat-lsb
-      - curl
-      - unzip
+    yum:
+      name: ['@development tools', 'kernel-devel', 'vim', 'redhat-lsb', 'curl', 'unzip', 'libargon2', 'libXpm'] 
 
   # Start of proper Wiki configuration.
   - name: Install Apache web server
@@ -55,13 +49,15 @@
   - name: Install PHP 7.2
     yum:
       name: php
+      disablerepo: "base,epel,extras,updates"
       enablerepo: remi-php72
       state: present
 
   # php-gd is used for image resizing(?)
-  - name: Install PHP GD
+  - name: Install PHP modules
     yum: 
-      name: php72-php-gd
+      name: ['php-gd', 'php-mbstring', 'php-xml']
+      disablerepo: "base,epel,extras,updates"
       enablerepo: remi-php72
       state: present
 
