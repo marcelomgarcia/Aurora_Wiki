@@ -56,7 +56,7 @@
   # php-gd is used for image resizing(?)
   - name: Install PHP modules
     yum: 
-      name: ['php-gd', 'php-mbstring', 'php-xml']
+      name: ['php-gd', 'php-mbstring', 'php-xml', 'php-pdo']
       disablerepo: "base,epel,extras,updates"
       enablerepo: remi-php72
       state: present
