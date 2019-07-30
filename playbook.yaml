@@ -19,7 +19,7 @@
       
   - name: Install Basic Packages
     yum:
-      name: ['@development tools', 'kernel-devel', 'vim', 'redhat-lsb', 'curl', 'unzip', 'libargon2', 'libXpm'] 
+      name: ['@development tools', 'kernel-devel', 'vim', 'redhat-lsb', 'curl', 'unzip', 'libargon2', 'libXpm', 'mariadb-server'] 
 
   # Start of proper Wiki configuration.
   - name: Install Apache web server
@@ -56,7 +56,7 @@
   # php-gd is used for image resizing(?)
   - name: Install PHP modules
     yum: 
-      name: ['php-gd', 'php-mbstring', 'php-xml', 'php-pdo']
+      name: ['php-gd', 'php-mbstring', 'php-xml', 'php-pdo', 'php-mysql']
       disablerepo: "base,epel,extras,updates"
       enablerepo: remi-php72
       state: present
