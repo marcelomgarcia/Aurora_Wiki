@@ -32,6 +32,11 @@
       name: httpd
       enabled: yes
 
+  - name: Enable MariaDB
+    service: 
+      name: mariadb
+      enabled: yes
+
   # Make sure EPEL is installed
   - name: Install EPEL respository
     yum_repository:
